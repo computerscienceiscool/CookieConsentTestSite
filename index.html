@@ -7,33 +7,14 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-        }
-
-        .content {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        #cookieConsent {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: #f1f1f1;
-            padding: 20px;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-            display: none;
-        }
-
-        .consent-buttons {
-            margin-top: 10px;
+            margin: 20px;
         }
 
         button {
-            padding: 8px 16px;
-            margin-right: 10px;
+            padding: 10px 20px;
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
             cursor: pointer;
         }
 
@@ -43,108 +24,51 @@
             padding: 20px;
             background: #f9f9f9;
             border: 1px solid #ddd;
+            border-radius: 4px;
         }
 
         .preference-item {
-            margin: 10px 0;
+            margin: 15px 0;
         }
     </style>
 </head>
 <body>
-    <div class="content">
-        <h1>Cookie Consent Test Site</h1>
-        <p>This is a test site for implementing and testing cookie consent mechanisms.</p>
-        
-        <button onclick="openPreferences()">Cookie Preferences</button>
+    <h1>Cookie Consent Test Site</h1>
+    <p>This is a test site for implementing and testing cookie consent mechanisms.</p>
+    
+    <button onclick="openPreferences()">Cookie Preferences</button>
 
-        <div id="preferencesPanel">
-            <h2>Cookie Preferences</h2>
-            <div class="preference-item">
-                <input type="checkbox" id="necessaryCookies" checked disabled>
-                <label for="necessaryCookies">Necessary Cookies (Required)</label>
-            </div>
-            <div class="preference-item">
-                <input type="checkbox" id="analyticsCookies">
-                <label for="analyticsCookies">Analytics Cookies</label>
-            </div>
-            <div class="preference-item">
-                <input type="checkbox" id="marketingCookies">
-                <label for="marketingCookies">Marketing Cookies</label>
-            </div>
-            <button onclick="savePreferences()">Save Preferences</button>
+    <div id="preferencesPanel">
+        <h2>Cookie Preferences</h2>
+        <div class="preference-item">
+            <input type="checkbox" id="necessaryCookies" checked disabled>
+            <label for="necessaryCookies">Necessary Cookies (Required)</label>
         </div>
-    </div>
-
-    <div id="cookieConsent">
-        <p>This website uses cookies to ensure you get the best experience. Please choose your preferences:</p>
-        <div class="consent-buttons">
-            <button onclick="acceptAll()">Accept All</button>
-            <button onclick="acceptNecessary()">Necessary Only</button>
-            <button onclick="openPreferences()">Preferences</button>
+        <div class="preference-item">
+            <input type="checkbox" id="analyticsCookies">
+            <label for="analyticsCookies">Analytics Cookies</label>
         </div>
+        <div class="preference-item">
+            <input type="checkbox" id="marketingCookies">
+            <label for="marketingCookies">Marketing Cookies</label>
+        </div>
+        <button onclick="savePreferences()">Save Preferences</button>
     </div>
 
     <script>
-        // Show cookie consent if no preference is stored
-        window.onload = function() {
-            if (!localStorage.getItem('cookieConsent')) {
-                document.getElementById('cookieConsent').style.display = 'block';
-            }
-        }
-
-        function acceptAll() {
-            localStorage.setItem('cookieConsent', 'all');
-            localStorage.setItem('consentTimestamp', new Date().toISOString());
-            document.getElementById('cookieConsent').style.display = 'none';
-            setTestCookies('all');
-        }
-
-        function acceptNecessary() {
-            localStorage.setItem('cookieConsent', 'necessary');
-            localStorage.setItem('consentTimestamp', new Date().toISOString());
-            document.getElementById('cookieConsent').style.display = 'none';
-            setTestCookies('necessary');
-        }
-
         function openPreferences() {
             document.getElementById('preferencesPanel').style.display = 'block';
-            loadStoredPreferences();
         }
 
         function savePreferences() {
             const analytics = document.getElementById('analyticsCookies').checked;
             const marketing = document.getElementById('marketingCookies').checked;
             
-            localStorage.setItem('cookieConsent', 'custom');
             localStorage.setItem('analyticsConsent', analytics);
             localStorage.setItem('marketingConsent', marketing);
             localStorage.setItem('consentTimestamp', new Date().toISOString());
             
             document.getElementById('preferencesPanel').style.display = 'none';
-            document.getElementById('cookieConsent').style.display = 'none';
-            
-            setTestCookies('custom');
-        }
-
-        function loadStoredPreferences() {
-            const analytics = localStorage.getItem('analyticsConsent') === 'true';
-            const marketing = localStorage.getItem('marketingConsent') === 'true';
-            
-            document.getElementById('analyticsCookies').checked = analytics;
-            document.getElementById('marketingCookies').checked = marketing;
-        }
-
-        function setTestCookies(level) {
-            // Set a necessary cookie
-            document.cookie = "necessary_cookie=1; path=/; max-age=86400; SameSite=Strict";
-
-            if (level === 'all' || (level === 'custom' && localStorage.getItem('analyticsConsent') === 'true')) {
-                document.cookie = "analytics_cookie=1; path=/; max-age=86400; SameSite=Lax";
-            }
-
-            if (level === 'all' || (level === 'custom' && localStorage.getItem('marketingConsent') === 'true')) {
-                document.cookie = "marketing_cookie=1; path=/; max-age=86400; SameSite=Lax";
-            }
         }
     </script>
 </body>
